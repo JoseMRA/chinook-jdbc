@@ -11,9 +11,11 @@ import org.jmiguelra92.dao.PistaDAOJdbc;
 import org.jmiguelra92.modelo.Album;
 import org.jmiguelra92.modelo.Artista;
 import org.jmiguelra92.modelo.Genero;
+import org.jmiguelra92.modelo.Pista;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
@@ -100,33 +102,74 @@ public class Main {
 
     private static void contarPistasPorGenero() throws SQLException {
         // TODO opción 2: recorre generoDAO.contarPistas() e imprime "Género: número"
-        for (Genero genero : generoDAO.findAll()) {
-            System.out.println(genero);
+        Map<String, Integer> mapa = generoDAO.contarPistas();
+        for (Map.Entry<String, Integer> fila : mapa.entrySet()) {
+            String genero = fila.getKey();
+            Integer cantidad = fila.getValue();
+            System.out.println(genero + ": " + cantidad);
         }
     }
 
     private static void artistasMasVendidos() throws SQLException {
         // TODO opción 4: pide cuántos artistas quiere ver y usa artistaDAO.masVendidos(n)
+        int n = leerEntero("Introduce el nº de artistas que quieres ver: ");
+        Map<String, Integer> resultado = artistaDAO.masVendidos(n);
+        for (Map.Entry<String, Integer> fila : resultado.entrySet()) {
+            System.out.println(fila.getKey() + ": " + fila.getValue());
+        }
     }
 
     private static void albumesDeArtista() throws SQLException {
         // TODO opción 5: pide el id del artista y muestra albumDAO.findByArtista(id)
+        int id = leerEntero("Introduce el id del artista: ");
+        List<Album> lista = albumDAO.findByArtista(id);
+        for (Album album : lista) {
+            System.out.println(album);
+        }
     }
 
     private static void pistasDeGenero() throws SQLException {
         // TODO opción 6: pide el id del género, muestra cuántas pistas hay y las 20 primeras
+        int idGenero = leerEntero("Introduce el id del genero: ");
+        List<Pista> pistas = pistaDAO.findByGenero(idGenero);
+
+        System.out.println("Numero de pistas encontradas: " + pistas.size());
+
+        // Muestra las 20 primeras
+        List<Pista> subLista = pistas.subList(0, Math.min(20, pistas.size()));
+        for (Pista p : subLista) {
+            System.out.println(p);
+        }
     }
 
     private static void pistasDeAlbum() throws SQLException {
-        // TODO opción 7: pide el id del álbum y muestra pistaDAO.findByAlbum(id)
+        // TODO opción 7: pide el id del album y muestra pistaDAO.findByAlbum(id)
+        int idAlbum = leerEntero("Introduce el id del album: ");
+        List<Pista> pistas = pistaDAO.findByAlbum(idAlbum);
+        for (Pista p : pistas) {
+            System.out.println(p);
+        }
     }
 
     private static void cambiarTituloAlbum() throws SQLException {
         // TODO opción 9: pide id del álbum, id de su artista y nuevo título; usa albumDAO.update(...)
+        int idAlbum = leerEntero("Introduce el id del album: ");
+        int idArtista = leerEntero("Introduce el id del artista: ");
+        String nuevoTitulo = leerTexto("Introduce el nuevo titulo: ");
+
+        Artista artista = new Artista(idArtista, null);
+        Album album = new Album(idAlbum, nuevoTitulo, artista);
     }
 
     private static void borrarAlbum() throws SQLException {
         // TODO opción 10: pide el id del álbum y usa albumDAO.delete(id); avisa si no existía
+        int id = leerEntero("Id del album a borrar: ");
+        boolean borrado = albumDAO.delete(id);
+        if (borrado) {
+            System.out.println("Album borrado correctamente.");
+        } else {
+            System.out.println("El album no se ha podido borrar.");
+        }
     }
 
     // ---------- Lectura de teclado ----------
