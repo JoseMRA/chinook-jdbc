@@ -1,17 +1,15 @@
 package org.jmiguelra92.jdbc;
 
+import org.jmiguelra92.conexion.ConexionBD;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 public class Paso2ListarGeneros {
     public static void main(String[] args) {
-        String url = "jdbc:mariadb://localhost:3306/chinook";
-        String usuario = "root";
-        String contraseña = "";
         String sql = "SELECT GenreId, Name FROM Genre ORDER BY Name";
-        try (Connection conexion = DriverManager.getConnection(url, usuario, contraseña);
+        try (Connection conexion = ConexionBD.getConnection();
              Statement sentencia = conexion.createStatement()) {
             boolean hayResultado = sentencia.execute(sql);
             System.out.println("¿execute() devuelve un ResultSet? " + hayResultado);
