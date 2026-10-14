@@ -14,6 +14,11 @@
             <artifactId>mariadb-java-client</artifactId>
             <version>3.5.10</version>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>6.6.58.Final</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
