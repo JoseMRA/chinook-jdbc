@@ -3,14 +3,37 @@ package org.jmiguelra92.modelo;
 
 import java.math.BigDecimal;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "Track")
 public class Pista {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "TrackId")
     private Integer id;
+
+    @Column(name = "Name")
     private String nombre;
+
+    @Column(name = "Composer")
     private String compositor;
+
+    @Column(name = "Milliseconds")
     private Integer milisegundos;
+
+    @Column(name = "UnitPrice")
     private BigDecimal precioUnitario;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "GenreId")
     private Genero genero;
+
+    // Nuevo en la PG3: con JPA filtramos por p.album.id, así que la pista necesita su álbum
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "AlbumId")
+    private Album album;
 
     public Pista() {
     }

@@ -6,6 +6,7 @@ import org.jmiguelra92.conexion.JPAUtil;
 import org.jmiguelra92.modelo.Genero;
 
 import java.sql.SQLException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,9 +26,24 @@ public class GeneroDAOJpa implements GeneroDAO {
     }
 
     // contarPistas necesita la entidad Pista, que anotaremos en el Paso 7.
-    // Mientras tanto, para que la clase compile:
     @Override
     public Map<String, Integer> contarPistas() throws SQLException {
-        throw new UnsupportedOperationException("Paso 7");
+        String jpql = "SELECT g.nombre, COUNT(p) "
+                + "FROM Genero g LEFT JOIN Pista p ON p.genero.id = g.id "
+                + "GROUP BY g.id, g.nombre "
+                + "ORDER BY COUNT(p) DESC, g.nombre";
+        Map<String, Integer> recuento = new LinkedHashMap<>();
+
+        try (EntityManager em = JPAUtil.getEntityManager()) {
+            // Cada fila es un Object[]: la posición 0 es el nombre y la 1 el recuento
+            List<Object[]> filas = em.createQuery(jpql, Object[].class).getResultList();
+            for (Object[] fila : filas) {
+                recuento.put((String) fila[0], ((Number) fila[1]).intValue());
+            }
+        } catch (PersistenceException e) {
+            throw JPAUtil.aSQLException(e);
+        }
+        return recuento;
     }
+    // Mientras tanto, para que la clase compile:
 }
