@@ -5,6 +5,10 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <!-- Aquí irán las entidades, una línea <class> por cada una (a partir del Paso 3) -->
+        <class>org.jmiguelra92.modelo.Genero</class>
+        <class>org.jmiguelra92.modelo.Artista</class>
+        <class>org.jmiguelra92.modelo.Album</class>
+        <class>org.jmiguelra92.modelo.Pista</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>
